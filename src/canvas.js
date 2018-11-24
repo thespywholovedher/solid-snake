@@ -6,66 +6,72 @@ const c = canvas.getContext('2d')
 canvas.width = innerWidth
 canvas.height = innerHeight
 
-const mouse = {
-    x: innerWidth / 2,
-    y: innerHeight / 2
+const snake = {
+    x: 50,
+    y: 50,
+    w: 16,
+    h: 16,
+    vx: 0,
+    vy: 0,
+    color: "red"
+};
+
+const init = () => {
+    document.addEventListener('keydown', ({ keyCode }) => {
+        switch(keyCode) {
+            case 37:
+                snake.vx = -2;
+            break;
+            case 38:
+                snake.vy = -2;
+            break;
+            case 39:
+                snake.vx = 2;
+            break;
+            case 40:
+                snake.vy = 2;
+            break;
+        }
+    }, false);
+};
+
+
+const drawSnake = ({x, y, w, h, color}) => {
+    c.beginPath();
+    c.rect(x, y, w, h);
+    c.fillStyle = color;
+    c.fill();
+    c.closePath();
+};
+
+const canvasClear = () => {
+    c.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-const colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']
+const draw = () => {
+    canvasClear();
+    drawSnake(snake);
+};
 
-// Event Listeners
-addEventListener('mousemove', event => {
-    mouse.x = event.clientX
-    mouse.y = event.clientY
-})
+const update = () => {
+    snake.x += snake.vx;
+    snake.y += snake.vy;
+    snake.color = "blue";
 
-addEventListener('resize', () => {
-    canvas.width = innerWidth
-    canvas.height = innerHeight
-
-    init()
-})
-
-// Objects
-function Object(x, y, radius, color) {
-    this.x = x
-    this.y = y
-    this.radius = radius
-    this.color = color
 }
 
-Object.prototype.draw = function() {
-    c.beginPath()
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
-    c.fill()
-    c.closePath()
+const mainLoop = () => {
+    update();
+    draw();
+    requestAnimationFrame(mainLoop);
 }
 
-Object.prototype.update = function() {
-    this.draw()
-}
+init();
+mainLoop();
 
-// Implementation
-let objects
-function init() {
-    objects = []
-
-    for (let i = 0; i < 400; i++) {
-        // objects.push();
-    }
-}
-
-// Animation Loop
-function animate() {
-    requestAnimationFrame(animate)
-    c.clearRect(0, 0, canvas.width, canvas.height)
-
-    c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
-    // objects.forEach(object => {
-    //  object.update();
-    // });
-}
-
-init()
-animate()
+// TODO: while loops and UI in JS
+// while(true)
+// {   
+//     //update();
+//     draw();
+// }

@@ -108,69 +108,81 @@ var c = canvas.getContext('2d');
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-var mouse = {
-    x: innerWidth / 2,
-    y: innerHeight / 2
+var snake = {
+    x: 50,
+    y: 50,
+    w: 16,
+    h: 16,
+    vx: 0,
+    vy: 0,
+    color: "red"
 };
 
-var colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66'];
+var init = function init() {
+    document.addEventListener('keydown', function (_ref) {
+        var keyCode = _ref.keyCode;
 
-// Event Listeners
-addEventListener('mousemove', function (event) {
-    mouse.x = event.clientX;
-    mouse.y = event.clientY;
-});
+        switch (keyCode) {
+            case 37:
+                snake.vx = -2;
+                break;
+            case 38:
+                snake.vy = -2;
+                break;
+            case 39:
+                snake.vx = 2;
+                break;
+            case 40:
+                snake.vy = 2;
+                break;
+        }
+    }, false);
+};
 
-addEventListener('resize', function () {
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
+var drawSnake = function drawSnake(_ref2) {
+    var x = _ref2.x,
+        y = _ref2.y,
+        w = _ref2.w,
+        h = _ref2.h,
+        color = _ref2.color;
 
-    init();
-});
-
-// Objects
-function Object(x, y, radius, color) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.color = color;
-}
-
-Object.prototype.draw = function () {
     c.beginPath();
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    c.fillStyle = this.color;
+    c.rect(x, y, w, h);
+    c.fillStyle = color;
     c.fill();
     c.closePath();
 };
 
-Object.prototype.update = function () {
-    this.draw();
+var canvasClear = function canvasClear() {
+    c.clearRect(0, 0, canvas.width, canvas.height);
 };
 
-// Implementation
-var objects = void 0;
-function init() {
-    objects = [];
+var draw = function draw() {
+    canvasClear();
+    drawSnake(snake);
+};
 
-    for (var i = 0; i < 400; i++) {
-        // objects.push();
-    }
-}
+var update = function update() {
+    snake.x += snake.vx;
+    snake.y += snake.vy;
+    snake.color = "blue";
+};
 
-// Animation Loop
-function animate() {
-    requestAnimationFrame(animate);
-    c.clearRect(0, 0, canvas.width, canvas.height);
-
-    c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y);
-    // objects.forEach(object => {
-    //  object.update();
-    // });
-}
+var mainLoop = function mainLoop() {
+    update();
+    draw();
+    requestAnimationFrame(mainLoop);
+};
 
 init();
-animate();
+mainLoop();
+
+// TODO: while loops and UI in JS
+// while(true)
+// {   
+//     //update();
+//     draw();
+// }
 
 /***/ }),
 
